@@ -1,0 +1,11 @@
+config:
+  # Cloud: "aws" (EKS) or "gcp" (GKE)
+  k8s-infra:cloud: aws
+  aws:region: eu-west-1
+  k8s-infra:projectName: k8s-infra
+  k8s-infra:environment: dev
+  k8s-infra:clusterName: k8s-infra-cluster
+  k8s-infra:clusterVersion: "1.29"
+  k8s-infra:nodeInstanceType: t3.medium
+  k8s-infra:nodeDesiredSize: "2"
+  k8s-infra:vpcCidr: 10.0.0.0/16

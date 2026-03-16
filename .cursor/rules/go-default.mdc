@@ -1,0 +1,15 @@
+---
+description: Use Go as the default language for new code and tooling in this project
+alwaysApply: true
+---
+
+# Default Language: Go
+
+This project uses **Go** as the default language for:
+
+- **New applications, services, and CLI tools** – Prefer Go unless there is a strong reason to use another language (e.g. React for frontend, YAML for K8s/ArgoCD).
+- **Scripts and automation** – Prefer Go for new automation; use shell only for short one-off commands or when Go is not available in the environment.
+- **Infrastructure as Code** – Pulumi programs are written in Go (see `pulumi/`).
+- **Code samples and examples** in docs – Use Go unless the example is specifically for another stack (e.g. Kubernetes YAML, frontend).
+
+When adding dependencies or tooling, prefer Go-based options where they fit (e.g. Go modules, standard library, common Go libraries). Keep existing non-Go assets (e.g. Kubernetes YAML, React/Python in `application/`) as-is unless explicitly migrating.

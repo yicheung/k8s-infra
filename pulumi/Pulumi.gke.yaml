@@ -1,0 +1,14 @@
+# GKE stack: set cloud to gcp and configure GCP project/region
+config:
+  k8s-infra:cloud: gcp
+  gcp:project: YOUR_GCP_PROJECT_ID
+  gcp:region: us-central1
+  k8s-infra:projectName: k8s-infra
+  k8s-infra:environment: dev
+  k8s-infra:clusterName: k8s-infra-cluster
+  k8s-infra:clusterVersion: "1.29"
+  k8s-infra:nodeMachineType: e2-medium
+  k8s-infra:nodeDesiredSize: "2"
+  # Optional overrides (otherwise uses gcp:project / gcp:region)
+  # k8s-infra:gcpProject: my-project
+  # k8s-infra:gcpRegion: us-west1

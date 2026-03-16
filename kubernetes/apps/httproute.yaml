@@ -1,0 +1,26 @@
+# Gateway API: HTTPRoute for TaskApp (replaces legacy Ingress)
+# Requires Cilium with Gateway API enabled and a Gateway (gateway.yaml)
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: taskapp
+  namespace: taskapp
+spec:
+  parentRefs:
+  - name: taskapp-gateway
+    namespace: taskapp
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /api
+    backendRefs:
+    - name: backend
+      port: 8000
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: frontend
+      port: 80
