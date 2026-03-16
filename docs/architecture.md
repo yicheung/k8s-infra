@@ -14,7 +14,7 @@ This document describes the modern stack used in k8s-infra: **managed Kubernetes
 Legacy components **not** used:
 
 - **MetalLB** – Not needed; cloud LBs are used.
-- **Traefik / Ingress** – Replaced by **Gateway API** (Cilium as provider).
+- **Legacy Ingress controllers** – Replaced by **Gateway API** (Cilium as provider).
 - **Calico** – Replaced by **Cilium** (CNI + policies).
 - **kubeadm / self-managed nodes** – Replaced by **EKS / GKE**.
 
@@ -30,7 +30,7 @@ Legacy components **not** used:
 - **Gateway** (`kubernetes/apps/gateway.yaml`): `gatewayClassName: cilium`, HTTP listener on port 80.
 - **HTTPRoute** (`kubernetes/apps/httproute.yaml`): Attached to that Gateway; `/api` → backend:8000, `/` → frontend:80.
 
-No legacy `Ingress` or `ingressClassName: traefik`; everything uses Gateway API resources.
+No legacy Ingress resources or ingressClassName-specific controllers; everything uses Gateway API resources.
 
 ## Multi-cloud (EKS and GKE)
 

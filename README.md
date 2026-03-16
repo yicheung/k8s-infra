@@ -52,7 +52,7 @@ flowchart TB
 |----------|------------|---------|
 | **Cloud / Orchestration** | AWS EKS or Google GKE | Managed Kubernetes |
 | **Infrastructure as Code** | Pulumi (Go) | EKS/GKE, VPC, and supporting resources |
-| **CNI & Gateway API** | Cilium | eBPF networking, network policies, Gateway API (replaces Ingress + MetalLB/Traefik) |
+| **CNI & Gateway API** | Cilium | eBPF networking, network policies, Gateway API (replaces legacy Ingress controllers and MetalLB) |
 | **Ingress / L7** | Gateway API | Standard HTTP routing (implemented by Cilium); cloud LB for external traffic |
 | **Certificate Management** | cert-manager | Automated TLS certificates |
 | **Secrets Management** | AWS Secrets Manager / GCP Secret Manager | Cloud-native secrets storage |
