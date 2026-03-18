@@ -50,16 +50,19 @@ func main() {
 			"Project":     pulumi.String(projectName),
 		}
 
+		enableFargate := cfg.GetBool("enableFargate")
+
 		if cloud == "aws" {
 			return deployEKS(ctx, deployEKSConfig{
-				cfg:          cfg,
-				cfgGlobal:    cfgGlobal,
-				projectName:  projectName,
-				environment:  environment,
-				clusterName:  clusterName,
+				cfg:           cfg,
+				cfgGlobal:     cfgGlobal,
+				projectName:   projectName,
+				environment:   environment,
+				clusterName:   clusterName,
 				clusterVersion: clusterVersion,
-				desiredSize:  desiredSize,
-				commonTags:   commonTags,
+				desiredSize:   desiredSize,
+				commonTags:    commonTags,
+				enableFargate: enableFargate,
 			})
 		}
 
@@ -85,6 +88,7 @@ type deployEKSConfig struct {
 	clusterVersion string
 	desiredSize    int
 	commonTags     pulumi.StringMap
+	enableFargate  bool
 }
 
 func deployEKS(ctx *pulumi.Context, c deployEKSConfig) error {
@@ -248,6 +252,56 @@ func deployEKS(ctx *pulumi.Context, c deployEKSConfig) error {
 	})
 	if err != nil {
 		return err
+	}
+
+	// --- Optional Fargate support ---
+	if c.enableFargate {
+		// Pod execution role for Fargate pods
+		podExecutionAssume, _ := json.Marshal(map[string]interface{}{
+			"Version": "2012-10-17",
+			"Statement": []map[string]interface{}{
+				{
+					"Effect": "Allow",
+					"Principal": map[string]interface{}{
+						"Service": "eks-fargate-pods.amazonaws.com",
+					},
+					"Action": "sts:AssumeRole",
+				},
+			},
+		})
+
+		podExecutionRole, err := iam.NewRole(ctx, "eks-fargate-pod-role", &iam.RoleArgs{
+			AssumeRolePolicy: pulumi.String(string(podExecutionAssume)),
+			Tags:             c.commonTags,
+		})
+		if err != nil {
+			return err
+		}
+
+		_, err = iam.NewRolePolicyAttachment(ctx, "eks-fargate-pod-policy", &iam.RolePolicyAttachmentArgs{
+			Role:      podExecutionRole.Name,
+			PolicyArn: pulumi.String("arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"),
+		})
+		if err != nil {
+			return err
+		}
+
+		// Fargate profile that targets the application namespace (taskapp)
+		_, err = eks.NewFargateProfile(ctx, "fargate-taskapp", &eks.FargateProfileArgs{
+			ClusterName:         cluster.Name,
+			FargateProfileName:  pulumi.String(c.clusterName + "-taskapp-fargate"),
+			PodExecutionRoleArn: podExecutionRole.Arn,
+			SubnetIds:           pulumi.StringArray(subnetIds),
+			Selectors: eks.FargateProfileSelectorArray{
+				&eks.FargateProfileSelectorArgs{
+					Namespace: pulumi.String("taskapp"),
+				},
+			},
+			Tags: c.commonTags,
+		})
+		if err != nil {
+			return err
+		}
 	}
 
 	ctx.Export("cloud", pulumi.String("aws"))

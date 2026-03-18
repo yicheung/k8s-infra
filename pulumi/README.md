@@ -25,6 +25,7 @@ Provisions **AWS EKS** or **Google GKE** from a single codebase. Set `k8s-infra:
 | `k8s-infra:nodeInstanceType` | Node instance type | `t3.medium` |
 | `k8s-infra:nodeDesiredSize` | Desired node count | `2` |
 | `k8s-infra:vpcCidr` | VPC CIDR | `10.0.0.0/16` |
+| `k8s-infra:enableFargate` | Enable Fargate profile for `taskapp` namespace | `false` |
 
 ### GCP (GKE)
 

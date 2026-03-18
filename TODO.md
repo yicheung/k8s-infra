@@ -33,6 +33,8 @@
 
 ## Platform & developer experience
 
+- [ ] **GKE feature parity** – Research and implement GKE equivalents for EKS features (e.g. Fargate ↔ GKE Autopilot, IRSA ↔ Workload Identity, ALB ↔ GCLB).
+
 - [ ] **Backstage** or **internal developer portal** – Service catalog, docs, and self-service for teams.
 - [ ] **Kubecost** / **OpenCost** – Cost visibility and allocation per namespace, deployment, or label.
 
