@@ -1,0 +1,41 @@
+# To-Do: Research & Test
+
+## Service mesh options (besides Istio)
+
+- [ ] **AWS App Mesh** – Research and test on EKS (managed, Envoy-based).
+- [ ] **Linkerd** – Research and test on EKS and/or GKE (lightweight, mTLS + observability).
+- [ ] **Consul Connect** – Research and test on EKS and/or GKE (HashiCorp, discovery + mesh).
+- [ ] **Cilium Service Mesh** – Research and test on EKS and/or GKE (eBPF + Envoy; aligns with existing Cilium CNI).
+- [ ] **Anthos Service Mesh (ASM)** – Research and test on GKE (managed Istio).
+- [ ] **Traffic Director** – Research and test on GCP (managed L4/L7 traffic control; often used with mesh).
+
+## Node autoscaling
+
+- [ ] **Karpenter (EKS)** – Research and test on AWS EKS (provision nodes for unschedulable pods; instance selection, consolidation).
+- [ ] **Karpenter (GKE)** – Research and test on GKE using Karpenter’s GKE provider.
+- [ ] **GKE Autopilot** – Evaluate for fully managed nodes (no node-pool management).
+- [ ] **GKE Cluster Autoscaler** – Research and test standard GKE node-pool autoscaling.
+
+## Policy & security
+
+- [ ] **Kyverno** or **OPA Gatekeeper** – Policy-as-code (admission control, image validation, compliance).
+- [ ] **Trivy** / **Trivy Operator** – Image and manifest scanning in CI or in-cluster.
+- [ ] **Cilium Tetragon** – eBPF-based runtime security and observability (complements Cilium CNI).
+
+## Observability (beyond Prometheus/Grafana)
+
+- [ ] **OpenTelemetry** – Unified traces, metrics, logs; OTLP collectors and instrumentation.
+- [ ] **Loki** or **structured logging** – Centralized log aggregation and querying.
+
+## Serverless & event-driven
+
+- [ ] **KEDA** – Event-driven autoscaling (scale deployments from queues, HTTP, cron, etc.; scale to zero).
+
+## Platform & developer experience
+
+- [ ] **Backstage** or **internal developer portal** – Service catalog, docs, and self-service for teams.
+- [ ] **Kubecost** / **OpenCost** – Cost visibility and allocation per namespace, deployment, or label.
+
+## Resilience & chaos
+
+- [ ] **Chaos Mesh** or **Litmus** – Chaos engineering (pod kill, network delay, node failure) for resilience testing.
