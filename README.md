@@ -179,7 +179,9 @@ With EKS: the Cilium Gateway creates an AWS Load Balancer (ALB/NLB). The exact U
 
 ## GitOps
 
-ArgoCD watches this repo and syncs `kubernetes/apps` (including Gateway and HTTPRoute manifests).
+ArgoCD watches this repo and syncs `kubernetes/apps` (using `kubernetes/apps/kustomization.yaml` as the EKS-focused bundle).
+
+For commit-based image updates, the GitHub Actions workflow `.github/workflows/gitops-frontend.yml` builds `application/frontend`, pushes the image, and commits a new `kustomization.yaml` `newTag` so Argo CD can roll the change out.
 
 ## Documentation
 

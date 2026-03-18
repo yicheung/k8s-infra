@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# EKS-focused GitOps bundle:
+# - Deploy only the manifests needed for AWS/EKS (not the GCP external secrets store).
+# - Argo CD syncs this folder.
+resources:
+  - namespace.yaml
+  - gateway.yaml
+  - httproute.yaml
+  - frontend.yaml
+  - backend.yaml
+  - external-secret-aws.yaml
+
+# Commit-based GitOps: CI updates these tags and commits them.
+images:
+  - name: yicheung/task-frontend
+    newTag: v2
+  - name: yicheung/task-backend
+    newTag: v1
+

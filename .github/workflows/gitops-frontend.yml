@@ -1,0 +1,81 @@
+name: GitOps Frontend (Commit-based)
+
+on:
+  push:
+    branches: [main]
+    # Only run when the app changes; the tag-bump commit itself only modifies kustomization,
+    # so it won't retrigger this workflow.
+    paths:
+      - "application/frontend/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Compute frontend tag
+        id: vars
+        run: |
+          TAG="frontend-${GITHUB_SHA::7}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push frontend image
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
+            echo "Missing DOCKERHUB_USERNAME/DOCKERHUB_TOKEN secrets."
+            exit 1
+          fi
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker build -t "yicheung/task-frontend:${TAG}" "application/frontend"
+          docker push "yicheung/task-frontend:${TAG}"
+
+      - name: Update kustomization image tag
+        env:
+          TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          python3 - <<'PY'
+          import os, re, sys
+
+          path = "kubernetes/apps/kustomization.yaml"
+          tag = os.environ["TAG"]
+
+          with open(path, "r", encoding="utf-8") as f:
+            text = f.read()
+
+          pattern = r"(name:\s*yicheung/task-frontend\s*\n\s*newTag:\s*)([^\n]+)"
+          new_text, n = re.subn(pattern, r"\1" + tag, text, flags=re.M)
+
+          if n != 1:
+            print(f"Expected to update 1 frontend image tag, but replaced {n}.")
+            sys.exit(1)
+
+          with open(path, "w", encoding="utf-8") as f:
+            f.write(new_text)
+          PY
+
+      - name: Commit and push tag bump
+        env:
+          TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet kubernetes/apps/kustomization.yaml; then
+            echo "No kustomization change; skipping commit."
+            exit 0
+          fi
+
+          git add kubernetes/apps/kustomization.yaml
+          git commit -m "chore(gitops): bump frontend to ${TAG}"
+          git push
+
