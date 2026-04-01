@@ -24,6 +24,7 @@
 
 ## Observability (beyond Prometheus/Grafana)
 
+- [ ] **Cilium Hubble** – Enable flow observability/UI aligned with existing Cilium CNI (complements metrics-only views).
 - [ ] **OpenTelemetry** – Unified traces, metrics, logs; OTLP collectors and instrumentation.
 - [ ] **Loki** or **structured logging** – Centralized log aggregation and querying.
 
@@ -37,6 +38,12 @@
 
 - [ ] **Backstage** or **internal developer portal** – Service catalog, docs, and self-service for teams.
 - [ ] **Kubecost** / **OpenCost** – Cost visibility and allocation per namespace, deployment, or label.
+
+## Production foundation (DNS, TLS, backup)
+
+- [ ] **ExternalDNS** – Sync Gateway API / HTTPRoute hostnames to **Route53** (EKS) or **Cloud DNS** (GKE) for stable production hostnames.
+- [ ] **HTTPS on Gateway API** – **cert-manager** `Certificate` resources + TLS listeners on the Gateway (and DNS validation); extend beyond HTTP-only [`gateway.yaml`](kubernetes/apps/gateway.yaml).
+- [ ] **Velero** – Cluster backup and restore (namespaces, PVs where applicable); validate DR story on EKS and GKE.
 
 ## Resilience & chaos
 
