@@ -20,7 +20,7 @@
 
 - [ ] **Kyverno** or **OPA Gatekeeper** – Policy-as-code (admission control, image validation, compliance).
 - [ ] **Trivy** / **Trivy Operator** – Image and manifest scanning in CI or in-cluster.
-- [ ] **Cilium Tetragon** – eBPF-based runtime security and observability (complements Cilium CNI).
+- [ ] **Cilium Tetragon** – eBPF-based runtime security and observability (complements Cilium CNI); compare overlap with **Falco** ([`argocd/applications/falco.yaml`](argocd/applications/falco.yaml)).
 
 ## Observability (beyond Prometheus/Grafana)
 

@@ -59,6 +59,7 @@ flowchart TB
 | **Secrets Sync** | External Secrets Operator | Cloud secrets → Kubernetes Secrets |
 | **GitOps** | ArgoCD | Declarative continuous delivery |
 | **Monitoring** | Prometheus & Grafana | Metrics and dashboards |
+| **Runtime security** | Falco (optional) | Syscall / K8s-audit rule engine (DaemonSet); see `argocd/applications/falco.yaml` |
 
 ## Features Demonstrated
 
@@ -147,6 +148,14 @@ helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring
 # ArgoCD
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Falco (runtime security; optional — install after Prometheus if using ServiceMonitor)
+# Either sync via Argo CD (GitOps):
+#   kubectl apply -f argocd/applications/falco.yaml
+# Or one-shot Helm:
+#   helm repo add falcosecurity https://falcosecurity.github.io/charts
+#   helm install falco falcosecurity/falco -n falco --create-namespace \
+#     --set driver.kind=modern_ebpf --set metrics.enabled=true --set serviceMonitor.create=true
 ```
 
 ### 4. Configure cloud secrets and deploy app

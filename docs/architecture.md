@@ -47,6 +47,16 @@ Use stack **dev** for EKS (`Pulumi.dev.yaml`) or **gke** for GKE (`Pulumi.gke.ya
 - **External Secrets Operator** syncs from AWS/GCP into Kubernetes Secrets (e.g. `taskapp-secrets`). Use IRSA (EKS) or Workload Identity (GKE) for production.
 - **Network policies** can be expressed with Cilium CiliumNetworkPolicy or standard NetworkPolicy.
 
+### Runtime security (threat detection)
+
+**Falco** (CNCF) is optional in this repo: a **DaemonSet** that evaluates rules against syscalls, K8s audit events, and related sources to flag suspicious behavior (shell in a container, sensitive file access, etc.). It complements—but does not replace—**admission policy** (Kyverno, OPA Gatekeeper) and **image scanning** (Trivy).
+
+- **Deploy:** GitOps via [`argocd/applications/falco.yaml`](../argocd/applications/falco.yaml) (official `falcosecurity` Helm chart), or `helm install` as in the README. Uses **`driver.kind: modern_ebpf`** explicitly so Argo CD does not fight `auto` + in-cluster config mutations.
+- **Observability:** Chart values enable metrics and a **ServiceMonitor** when you already run **kube-prometheus-stack** (Prometheus Operator CRDs required).
+- **Cilium Tetragon** (see [TODO.md](../TODO.md)) is the closest “same stack” alternative: eBPF-native, tight integration with Cilium. **Falco** has a large default ruleset and broad ecosystem (Falcosidekick, commercial backends); **Tetragon** aligns with Cilium observability and tracing. Many teams run one runtime detector first, then evaluate the other for overlap or depth.
+
+If **`modern_ebpf`** fails on older node kernels, override the chart to `ebpf` or `kmod` per [Falco driver docs](https://falco.org/docs/setup/container/).
+
 ## Observability
 
 - **Prometheus** and **Grafana** for metrics and dashboards.
