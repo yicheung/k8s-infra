@@ -93,6 +93,8 @@ k8s-infra/
 ├── argocd/
 │   └── applications/
 ├── application/
+├── scripts/
+│   └── bootstrap-platform.sh   # Optional: EKS/GKE + Cilium + platform (see Quick Start)
 └── docs/
 ```
 
@@ -103,6 +105,17 @@ k8s-infra/
 - AWS CLI (for EKS) or gcloud (for GKE) with credentials
 - [Pulumi CLI](https://www.pulumi.com/docs/install/) and Go 1.21+
 - kubectl, Helm
+
+### Automated bootstrap (AWS or GCP)
+
+From the repo root, after configuring the correct Pulumi stack (`dev` for EKS, `gke` for GKE — see [pulumi/README.md](pulumi/README.md)):
+
+```bash
+./scripts/bootstrap-platform.sh aws    # EKS + platform components
+./scripts/bootstrap-platform.sh gcp      # GKE + platform components
+```
+
+Optional second argument: `cluster` (only Pulumi + kubeconfig) or `platform` (only Helm/kubectl; use when the cluster already exists). Falco and the TaskApp Argo CD application are not included; apply those separately as in the steps below.
 
 ### 1. Create cluster (EKS or GKE)
 
